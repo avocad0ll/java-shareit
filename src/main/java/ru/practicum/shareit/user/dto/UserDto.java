@@ -1,21 +1,27 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
-public class User {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public class UserDto {
     private Long id;
     private String name;
+
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email should be valid")
     private String email;
 
-    public User() {
+    public UserDto() {
     }
 
-    public User(Long id, String name, String email) {
+    public UserDto(Long id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
     }
 
-    public static UserBuilder builder() {
-        return new UserBuilder();
+    public static UserDtoBuilder builder() {
+        return new UserDtoBuilder();
     }
 
     public Long getId() {
@@ -42,28 +48,28 @@ public class User {
         this.email = email;
     }
 
-    public static class UserBuilder {
+    public static class UserDtoBuilder {
         private Long id;
         private String name;
         private String email;
 
-        public UserBuilder id(Long id) {
+        public UserDtoBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public UserBuilder name(String name) {
+        public UserDtoBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public UserBuilder email(String email) {
+        public UserDtoBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public User build() {
-            return new User(id, name, email);
+        public UserDto build() {
+            return new UserDto(id, name, email);
         }
     }
 }
