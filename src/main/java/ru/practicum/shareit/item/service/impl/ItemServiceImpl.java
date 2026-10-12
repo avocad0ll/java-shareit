@@ -24,6 +24,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long userId, ItemDto itemDto) {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+        if (itemDto.getName() == null || itemDto.getName().isBlank() || itemDto.getDescription() == null || itemDto.getDescription().isBlank() || itemDto.getAvailable() == null) {
+            throw new BadRequestException("Invalid item data");
+        }
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
         Item savedItem = itemRepository.save(item);
@@ -103,6 +107,7 @@ public class ItemServiceImpl implements ItemService {
             addBookings(dto, item.getId());
             result.add(dto);
         }
+        result.sort(Comparator.comparing(ItemWithBookingsDto::getId, Comparator.nullsLast(Comparator.naturalOrder())));
         return result;
     }
 
@@ -159,7 +164,7 @@ public class ItemServiceImpl implements ItemService {
             if (booking.getStatus() != BookingStatus.APPROVED) {
                 continue;
             }
-            if (booking.getEnd().isBefore(now)) {
+            if (booking.getEnd().isBefore(now) || (booking.getStart().isBefore(now) && booking.getEnd().isAfter(now))) {
                 if (lastBooking == null || booking.getEnd().isAfter(lastBooking.getEnd())) {
                     lastBooking = booking;
                 }
@@ -167,8 +172,6 @@ public class ItemServiceImpl implements ItemService {
                 if (nextBooking == null || booking.getStart().isBefore(nextBooking.getStart())) {
                     nextBooking = booking;
                 }
-            } else if (booking.getStart().isBefore(now) && booking.getEnd().isAfter(now)) {
-                lastBooking = booking;
             }
         }
         if (lastBooking != null) {
