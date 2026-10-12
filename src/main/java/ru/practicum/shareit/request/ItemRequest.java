@@ -1,13 +1,25 @@
 package ru.practicum.shareit.request;
 
+import jakarta.persistence.*;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requestor_id", nullable = false)
     private User requestor;
+
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
     public ItemRequest() {
@@ -18,10 +30,6 @@ public class ItemRequest {
         this.description = description;
         this.requestor = requestor;
         this.created = created;
-    }
-
-    public static ItemRequestBuilder builder() {
-        return new ItemRequestBuilder();
     }
 
     public Long getId() {
@@ -54,36 +62,5 @@ public class ItemRequest {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
-    }
-
-    public static class ItemRequestBuilder {
-        private Long id;
-        private String description;
-        private User requestor;
-        private LocalDateTime created;
-
-        public ItemRequestBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public ItemRequestBuilder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public ItemRequestBuilder requestor(User requestor) {
-            this.requestor = requestor;
-            return this;
-        }
-
-        public ItemRequestBuilder created(LocalDateTime created) {
-            this.created = created;
-            return this;
-        }
-
-        public ItemRequest build() {
-            return new ItemRequest(id, description, requestor, created);
-        }
     }
 }

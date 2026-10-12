@@ -1,8 +1,18 @@
 package ru.practicum.shareit.user;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "email", nullable = false, length = 512, unique = true)
     private String email;
 
     public User() {
@@ -12,10 +22,6 @@ public class User {
         this.id = id;
         this.name = name;
         this.email = email;
-    }
-
-    public static UserBuilder builder() {
-        return new UserBuilder();
     }
 
     public Long getId() {
@@ -40,30 +46,5 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public static class UserBuilder {
-        private Long id;
-        private String name;
-        private String email;
-
-        public UserBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public UserBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public UserBuilder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public User build() {
-            return new User(id, name, email);
-        }
     }
 }
