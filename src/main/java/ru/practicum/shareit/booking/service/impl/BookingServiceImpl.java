@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.mapper.BookingResponseMapper;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.BadRequestException;
@@ -65,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(booker);
         booking.setStatus(BookingStatus.WAITING);
         Booking savedBooking = bookingRepository.save(booking);
-        return BookingResponseMapper.toBookingResponseDto(savedBooking);
+        return BookingMapper.toBookingResponseDto(savedBooking);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         Booking updatedBooking = bookingRepository.save(booking);
-        return BookingResponseMapper.toBookingResponseDto(updatedBooking);
+        return BookingMapper.toBookingResponseDto(updatedBooking);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
         if (!isBooker && !isOwner) {
             throw new NotFoundException("Access denied");
         }
-        return BookingResponseMapper.toBookingResponseDto(booking);
+        return BookingMapper.toBookingResponseDto(booking);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findByBookerId(userId, sort);
                 break;
         }
-        return bookings.stream().map(BookingResponseMapper::toBookingResponseDto).collect(Collectors.toList());
+        return bookings.stream().map(BookingMapper::toBookingResponseDto).collect(Collectors.toList());
     }
 
     @Override
@@ -155,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findByItemOwnerId(userId, sort);
                 break;
         }
-        return bookings.stream().map(BookingResponseMapper::toBookingResponseDto).collect(Collectors.toList());
+        return bookings.stream().map(BookingMapper::toBookingResponseDto).collect(Collectors.toList());
     }
 
     private BookingState parseState(String state) {
