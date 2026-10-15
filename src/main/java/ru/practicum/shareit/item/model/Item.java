@@ -1,14 +1,31 @@
 package ru.practicum.shareit.item.model;
 
+import jakarta.persistence.*;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
+@Entity
+@Table(name = "items")
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
     private ItemRequest request;
 
     public Item() {
@@ -21,10 +38,6 @@ public class Item {
         this.available = available;
         this.owner = owner;
         this.request = request;
-    }
-
-    public static ItemBuilder builder() {
-        return new ItemBuilder();
     }
 
     public Long getId() {
@@ -73,48 +86,5 @@ public class Item {
 
     public void setRequest(ItemRequest request) {
         this.request = request;
-    }
-
-    public static class ItemBuilder {
-        private Long id;
-        private String name;
-        private String description;
-        private Boolean available;
-        private User owner;
-        private ItemRequest request;
-
-        public ItemBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public ItemBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public ItemBuilder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public ItemBuilder available(Boolean available) {
-            this.available = available;
-            return this;
-        }
-
-        public ItemBuilder owner(User owner) {
-            this.owner = owner;
-            return this;
-        }
-
-        public ItemBuilder request(ItemRequest request) {
-            this.request = request;
-            return this;
-        }
-
-        public Item build() {
-            return new Item(id, name, description, available, owner, request);
-        }
     }
 }

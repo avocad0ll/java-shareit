@@ -1,16 +1,34 @@
 package ru.practicum.shareit.booking;
 
+import jakarta.persistence.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "bookings")
 public class Booking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "start_date", nullable = false)
     private LocalDateTime start;
+
+    @Column(name = "end_date", nullable = false)
     private LocalDateTime end;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booker_id", nullable = false)
     private User booker;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private BookingStatus status;
 
     public Booking() {
@@ -23,10 +41,6 @@ public class Booking {
         this.item = item;
         this.booker = booker;
         this.status = status;
-    }
-
-    public static BookingBuilder builder() {
-        return new BookingBuilder();
     }
 
     public Long getId() {
@@ -75,48 +89,5 @@ public class Booking {
 
     public void setStatus(BookingStatus status) {
         this.status = status;
-    }
-
-    public static class BookingBuilder {
-        private Long id;
-        private LocalDateTime start;
-        private LocalDateTime end;
-        private Item item;
-        private User booker;
-        private BookingStatus status;
-
-        public BookingBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public BookingBuilder start(LocalDateTime start) {
-            this.start = start;
-            return this;
-        }
-
-        public BookingBuilder end(LocalDateTime end) {
-            this.end = end;
-            return this;
-        }
-
-        public BookingBuilder item(Item item) {
-            this.item = item;
-            return this;
-        }
-
-        public BookingBuilder booker(User booker) {
-            this.booker = booker;
-            return this;
-        }
-
-        public BookingBuilder status(BookingStatus status) {
-            this.status = status;
-            return this;
-        }
-
-        public Booking build() {
-            return new Booking(id, start, end, item, booker, status);
-        }
     }
 }
