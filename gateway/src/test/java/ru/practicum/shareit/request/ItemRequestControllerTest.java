@@ -55,6 +55,16 @@ class ItemRequestControllerTest {
     }
 
     @Test
+    void createRequestWithMalformedJsonReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/requests")
+                        .header("X-Sharer-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{bad json"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
     void getOwnRequests() throws Exception {
         when(requestClient.getOwnRequests(1L))
                 .thenReturn(ResponseEntity.ok(List.of(new ItemRequestDto(1L, "a"))));

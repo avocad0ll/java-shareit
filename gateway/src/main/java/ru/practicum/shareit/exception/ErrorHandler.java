@@ -3,6 +3,7 @@ package ru.practicum.shareit.exception;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -27,6 +28,13 @@ public class ErrorHandler {
     public Map<String, String> handleConstraintViolationException(ConstraintViolationException e) {
         log.error("Constraint violation: {}", e.getMessage(), e);
         return Map.of("error", "Validation failed");
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleNotReadableException(HttpMessageNotReadableException e) {
+        log.error("Malformed request body: {}", e.getMessage(), e);
+        return Map.of("error", "Malformed request body");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

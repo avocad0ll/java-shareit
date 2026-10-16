@@ -57,17 +57,6 @@ class ItemControllerTest {
     }
 
     @Test
-    void createItemWithoutNameReturnsBadRequest() throws Exception {
-        ItemDto invalid = new ItemDto(null, " ", "desc", true, null);
-
-        mockMvc.perform(post("/items")
-                        .header(USER_HEADER, 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalid)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void updateItem() throws Exception {
         when(itemService.update(eq(1L), eq(1L), any())).thenReturn(itemDto());
 

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
@@ -50,6 +52,9 @@ public class ItemController {
     public ResponseEntity<Object> search(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                                          @RequestParam String text) {
         log.info("Search items by text {}", text);
+        if (text.isBlank()) {
+            return ResponseEntity.ok(List.of());
+        }
         return itemClient.search(userId, text);
     }
 

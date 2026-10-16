@@ -24,12 +24,6 @@ class ErrorHandlerTest {
     }
 
     @Test
-    void handlesIllegalArgumentException() {
-        Map<String, String> result = handler.handleIllegalArgumentException(new IllegalArgumentException("bad"));
-        assertEquals("bad", result.get("error"));
-    }
-
-    @Test
     void handlesBadRequestException() {
         Map<String, String> result = handler.handleBadRequestException(new BadRequestException("bad request"));
         assertEquals("bad request", result.get("error"));

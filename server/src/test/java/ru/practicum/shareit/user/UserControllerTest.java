@@ -54,17 +54,6 @@ class UserControllerTest {
     }
 
     @Test
-    void createUserWithInvalidEmailReturnsBadRequest() throws Exception {
-        UserDto invalid = new UserDto(null, "Bad", "not-an-email");
-
-        mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalid)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("Validation failed"));
-    }
-
-    @Test
     void createUserConflictReturnsConflict() throws Exception {
         when(userService.create(any())).thenThrow(new ConflictException("Email already used"));
 

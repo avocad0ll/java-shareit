@@ -25,22 +25,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
-        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email cannot be null or empty");
-        }
-        if (!isValidEmail(userDto.getEmail())) {
-            throw new IllegalArgumentException("Email is invalid");
-        }
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new ConflictException("Email already exists");
         }
         User user = UserMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return UserMapper.toUserDto(savedUser);
-    }
-
-    private boolean isValidEmail(String email) {
-        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 
     @Override
@@ -52,9 +42,6 @@ public class UserServiceImpl implements UserService {
             existingUser.setName(userDto.getName());
         }
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
-            if (!isValidEmail(userDto.getEmail())) {
-                throw new IllegalArgumentException("Email is invalid");
-            }
             if (userRepository.existsByEmail(userDto.getEmail()) && !userDto.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
                 throw new ConflictException("Email already exists");
             }
